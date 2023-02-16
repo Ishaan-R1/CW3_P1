@@ -13,15 +13,10 @@ let app = new Vue({
       image_path: "https://cdn-icons-png.flaticon.com/512/221/221945.png",
       image_text: "Maths Icon",
     },
-    subjects: arrayOfObjects,
     // Call array of objects from lessons.js file into 'subjects' object
-    // subjects: [],
+    subjects: [],
     orderID: [],
     search: [],
-    getID: [],
-    getSpaces: [],
-
-
     // Object to hold data of user inputted order details
     order: {
       firstName: "",
@@ -50,36 +45,33 @@ let app = new Vue({
     cart: [],
   },
   created: function () {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js");
-    }
     // Fetch to retrieve lessons with GET
-    // fetch("https://afterschoolapp2-env.eba-wwaj2wgs.eu-west-2.elasticbeanstalk.com/collections/lessons").then(function (
-    //   response
-    // ) {
-    //   response.json().then(function (json) {
-    //     console.log(json);
-    //       // Push JSON data to subjects array when page is loaded
-    //     app.subjects = this.subjects;
-    //   });
-    // });
-
+    fetch(
+      "https://afterschoolapp2-env.eba-wwaj2wgs.eu-west-2.elasticbeanstalk.com/collections/lessons"
+    ).then(function (response) {
+      response.json().then(function (json) {
+        console.log(json);
+        // Push JSON data to subjects array when page is loaded
+        app.subjects = json;
+      });
+    });
     // setInterval(this.searchLessons, 1000);
   },
   methods: {
     // Fetch to send search request of subject name to backend
     searchLessons() {
-      // let subject = this.searchBar.input2;
-      // // Get user input of a subject and use fetch to retreive data from URL
-      // fetch("https://afterschoolapp2-env.eba-wwaj2wgs.eu-west-2.elasticbeanstalk.com/search/lessons/" + subject).then(function (
-      //   response
-      // ) {
-      //   response.json().then(function (json) {
-      //     console.log(json);
-      //     // Push JSON data to subjects array which loads on click 
-      //     app.subjects = json;
-      //   });
-      // });
+      let subject = this.searchBar.input2;
+      // Get user input of a subject and use fetch to retreive data from URL
+      fetch(
+        "https://afterschoolapp2-env.eba-wwaj2wgs.eu-west-2.elasticbeanstalk.com/search/lessons/" +
+          subject
+      ).then(function (response) {
+        response.json().then(function (json) {
+          console.log(json);
+          // Push JSON data to subjects array which loads on click
+          app.subjects = json;
+        });
+      });
     },
     // Function to get the correct order ID to save order data to
     getLessonID(id) {
@@ -87,7 +79,7 @@ let app = new Vue({
       'orders' collection via POST in 'lesson_id' field */
       this.orderID.push(id);
     },
-    // Function to POST user first name, number, spaces and lesson IDs 
+    // Function to POST user first name, number, spaces and lesson IDs
     postOrder(firstName, phone_number, id) {
       const order = {
         name: firstName,
@@ -97,41 +89,41 @@ let app = new Vue({
         spaces: this.cart.length,
       };
       // Fetch to save new order with POST when submitted
-      // fetch("https://afterschoolapp2-env.eba-wwaj2wgs.eu-west-2.elasticbeanstalk.com/collections/orders", {
-      //   method: "POST",
-      //   body: JSON.stringify(order),
-      //   headers: {
-      //     "Content-type": "application/json",
-      //   },
-      // })
-      //   // Convert data to JSON
-      //   .then((response) => response.json())
-      //   .then((json) => console.log(json));
+      fetch(
+        "https://afterschoolapp2-env.eba-wwaj2wgs.eu-west-2.elasticbeanstalk.com/collections/orders",
+        {
+          method: "POST",
+          body: JSON.stringify(order),
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      )
+        // Convert data to JSON
+        .then((response) => response.json())
+        .then((json) => console.log(json));
     },
     // Function to execute once user confirms order
-    updateSpaces1() {
-      // Fetch to update lesson spaces with PUT - ID is taken once user clicks on specific lesson     
-    // for (let i = 0; i < this.cart.length; i++) {      
-    //     fetch("https://afterschoolapp2-env.eba-wwaj2wgs.eu-west-2.elasticbeanstalk.com/collections/lessons/" + this.getID[i].toString(), {
-    //       method: "PUT",
-    //       body: JSON.stringify({
-    //         // Spaces is decremented by 1 and updated in database
-    //         spaces: this.getSpaces[i],
-    //       }),
-    //       headers: {
-    //         "Content-type": "application/json",
-    //       },
-    //     })
-    //       // Convert data to JSON
-    //       .then((response) => response.json())
-    //       .then((json) => console.log(json));
-    //   }
-      },
-    updateSpaces2(spacesNum, id) {
-      // Fetch to update lesson spaces with PUT - ID is taken once user clicks on specific lesson   
-        this.getID.push(id);
-        this.getSpaces.push(spacesNum);
-      },
+    updateSpaces(spaceNum, id) {
+      // Fetch to update lesson spaces with PUT - ID is taken once user clicks on specfic lesson
+      fetch(
+        "https://afterschoolapp2-env.eba-wwaj2wgs.eu-west-2.elasticbeanstalk.com/collections/lessons/" +
+          id,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            // Spaces is decremented by 1 and updated in database
+            spaces: spaceNum,
+          }),
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      )
+        // Convert data to JSON
+        .then((response) => response.json())
+        .then((json) => console.log(json));
+    },
     // Method to decrease number of spaces once user clicks 'Add to Cart' button
     decrementSpaces() {
       if (this.spaces > 0) {
