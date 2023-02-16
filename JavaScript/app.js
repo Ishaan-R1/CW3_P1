@@ -4,7 +4,7 @@ let app = new Vue({
     showProduct: true,
     path: "https://cdn-icons-png.flaticon.com/512/221/221945.png",
     text: "Maths Icon",
-    // Display data of 1 subject
+    // Display data of 1 subject.
     subject: {
       subject: "Math",
       location: "London",
