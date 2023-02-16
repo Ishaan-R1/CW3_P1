@@ -4,7 +4,7 @@ let app = new Vue({
     showProduct: true,
     path: "https://cdn-icons-png.flaticon.com/512/221/221945.png",
     text: "Maths Icon",
-    // Display data of 1 subject.
+    // Display data of 1 subject
     subject: {
       subject: "Math",
       location: "London",
@@ -45,6 +45,9 @@ let app = new Vue({
     cart: [],
   },
   created: function () {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
     // Fetch to retrieve lessons with GET
     fetch(
       "https://afterschoolapp2-env.eba-wwaj2wgs.eu-west-2.elasticbeanstalk.com/collections/lessons"
